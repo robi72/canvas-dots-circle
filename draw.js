@@ -1,10 +1,12 @@
 var nrOfDots = 12;
-var multiplier = 12;
+var multiplier = 2;
 
 var circleRadius = 200;
 var dotRadius = 10;
 var lineWidthCircle = 1;
 var offset = 50;
+
+var dotPositions = [];
 
 
 function draw() {
@@ -39,11 +41,39 @@ function drawCircle(context)   {
  function drawDots(context) {
     context.beginPath();
     context.fillStyle = "red";
-    var outlineCircleCenter = circleRadius + offset;
-    var x = outlineCircleCenter + circleRadius*Math.cos(0);
-    var y = outlineCircleCenter + circleRadius*Math.sin(0);
-    context.arc(x, y, dotRadius, 0, 2*Math.PI);
-    context.fill();
- }
+    
+    for (var i = 0; i < nrOfDots; i++)  {
+        var angle = 2 * Math.PI / nrOfDots * i;
+        var outlineCircleCenter = circleRadius + offset;
+        var x = outlineCircleCenter + circleRadius*Math.cos(angle);
+        var y = outlineCircleCenter + circleRadius*Math.sin(angle);
+        context.moveTo(x, y);
+        context.arc(x, y, dotRadius, 0, 2*Math.PI);
 
+        dotPositions.push({
+            x: x,
+            y: y,
+    });
+    }
+    context.fill();
+}
+
+
+/** Draws the outline circle for this project
+ * @param   {CanvasRenderingContext2D}  context
+ */
+
+ function drawLines(context)    {
+    context.strokeStyle = "black";
+    context.beginPath();
+    for (var i = 0; i < nrOfDots; i++)    {
+         var startPoint = dotPositions[i];
+         var nextIndex = (i * multiplier) % nrOfDots;
+         var endPoint = dotPositions[nextIndex];
+        
+         context.moveTo(startPoint.x, startPoint.y);
+         context.lineTo(endPoint.x, endPoint.y);
+    }
+    context.stroke();
+ }
  
